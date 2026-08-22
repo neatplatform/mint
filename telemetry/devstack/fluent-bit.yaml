@@ -1,0 +1,25 @@
+pipeline:
+  inputs:
+    # https://docs.fluentbit.io/manual/data-pipeline/inputs/forward
+    - name: forward
+      listen: 0.0.0.0
+      port: 24224
+      buffer_chunk_size: 1m
+      buffer_max_size: 6m
+
+    # The single endpoint supports both gRPC and HTTP protocols.
+    # https://docs.fluentbit.io/manual/data-pipeline/inputs/opentelemetry
+    - name: opentelemetry
+      tag: opentelemetry
+      listen: 0.0.0.0
+      port: 4318
+      tls: off
+      buffer_chunk_size: 512k
+      buffer_max_size: 4m
+
+  outputs:
+    # https://docs.fluentbit.io/manual/data-pipeline/outputs/standard-output
+    - name: stdout
+      match: '*'
+      format: json_lines
+      json_date_key: false

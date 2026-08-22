@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package file.v1;
+
+option go_package = "github.com/neatplatform/mint/telemetry/grpc/examples/proto/file/v1;filev1";
+
+service FileService {
+  rpc GetFileInfo(GetFileInfoRequest) returns (GetFileInfoResponse);
+  rpc Download(DownloadRequest) returns (stream DownloadResponse);
+  rpc Upload(stream UploadRequest) returns (UploadResponse);
+  rpc Sync(stream SyncRequest) returns (stream SyncResponse);
+}
+
+message GetFileInfoRequest {
+  string file_id = 1;
+}
+
+message GetFileInfoResponse {
+  FileInfo file_info = 1;
+}
+
+message DownloadRequest {
+  string file_id = 1;
+}
+
+message DownloadResponse {
+  FileChunk file_chunk = 1;
+  int64 downloaded_at = 2;
+}
+
+message UploadRequest {
+  FileChunk file_chunk = 1;
+  int64 uploaded_at = 2;
+}
+
+message UploadResponse {
+  string file_id = 1;
+  int64 size = 2;
+  string checksum = 3;
+}
+
+message SyncRequest {
+  FileEvent event = 1;
+}
+
+message SyncResponse {
+  FileEvent event = 1;
+}
+
+message FileInfo {
+  string file_id = 1;
+  string name = 2;
+  int64 size = 3;
+}
+
+message FileChunk {
+  bytes data = 1;
+  int64 offset = 2;
+}
+
+message FileEvent {
+  enum Type {
+    TYPE_UNSPECIFIED = 0;
+    TYPE_CREATED = 1;
+    TYPE_MODIFIED = 2;
+    TYPE_DELETED = 3;
+  }
+
+  Type type = 1;
+  string file_id = 2;
+  string name = 3;
+  int64 timestamp = 4;
+}

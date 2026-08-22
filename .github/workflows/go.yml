@@ -1,0 +1,17 @@
+name: Go
+on:
+  pull_request:
+    branches:
+      - main  # Pre-merge validation
+  merge_group:
+    branches:
+      - main  # Merge queue validation
+
+jobs:
+  call:
+    name: Call
+    uses: neatplatform/actions/.github/workflows/reusable-go.yml@main
+    permissions:
+      contents: read
+    secrets:
+      codecov_token: ${{ secrets.CODECOV_TOKEN }}

@@ -1,0 +1,67 @@
+apiVersion: v1
+kind: Secret
+type: Opaque
+metadata:
+  name: server
+  labels:
+    name: server
+data:
+  auth-token: c2VjcmV0LXRva2VuCg==
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    name: server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: server
+  template:
+    metadata:
+      labels:
+        name: server
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: server
+          image: moorara/server:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: ENVIRONMENT
+              value: dev
+            - name: LOG_LEVEL
+              value: info
+            - name: AUTH_TOKEN_FILE
+              value: /secrets/auth-token
+          volumeMounts:
+            - name: server
+              mountPath: /secrets
+              readOnly: true
+      volumes:
+        - name: server
+          secret:
+            defaultMode: 420
+            secretName: server
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    name: server
+spec:
+  type: ClusterIP
+  selector:
+    name: server
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http

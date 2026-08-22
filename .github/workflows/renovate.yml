@@ -1,0 +1,15 @@
+name: Renovate
+on:
+  pull_request:
+    branches:
+      - main  # Pre-merge validation
+  merge_group:
+    branches:
+      - main  # Merge queue validation
+
+jobs:
+  call:
+    name: Call
+    uses: neatplatform/renovate-config/.github/workflows/reusable-renovate.yml@main
+    permissions:
+      contents: read
