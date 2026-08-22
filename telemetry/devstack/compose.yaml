@@ -1,0 +1,50 @@
+name: observability
+services:
+
+  # https://hub.docker.com/r/grafana/alloy
+  alloy:
+    image: grafana/alloy:v1.18.1
+    container_name: alloy
+    hostname: alloy
+    restart: unless-stopped
+    ports:
+      - "3100:3100"  # Loki Push API
+      - "3317:4317"  # OTLP gRPC protocol
+      - "3318:4318"  # OTLP HTTP protocol
+    volumes:
+      - ./config.alloy:/etc/alloy/config.alloy:ro
+    command:
+      - run
+      - /etc/alloy/
+      - --stability.level=experimental
+
+  # https://docs.fluentbit.io/manual/installation/downloads/docker
+  fluent-bit:
+    image: cr.fluentbit.io/fluent/fluent-bit:5.1.0
+    container_name: fluent-bit
+    hostname: fluent-bit
+    restart: unless-stopped
+    ports:
+      - "24224:24224"      # Fluent Forward protocol (TCP)
+      - "24224:24224/udp"  # Fluent Forward protocol (UDP)
+      - "24318:4318"       # OTLP HTTP & gRPC protocols
+    volumes:
+      - ./fluent-bit.yaml:/etc/fluent-bit/config.yaml:ro
+    command:
+      - /fluent-bit/bin/fluent-bit
+      - --config=/etc/fluent-bit/config.yaml
+
+  # https://hub.docker.com/r/otel/opentelemetry-collector-contrib
+  opentelemetry-collector:
+    image: otel/opentelemetry-collector-contrib:0.158.0
+    container_name: opentelemetry-collector
+    hostname: opentelemetry-collector
+    restart: unless-stopped
+    ports:
+      - "8006:8006"  # Fluent Forward protocol
+      - "4317:4317"  # OTLP gRPC protocol
+      - "4318:4318"  # OTLP HTTP protocol
+    volumes:
+      - ./opentelemetry.yaml:/etc/opentelemetry-collector/config.yaml:ro
+    command:
+      - --config=/etc/opentelemetry-collector/config.yaml

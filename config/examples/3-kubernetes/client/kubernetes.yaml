@@ -1,0 +1,45 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: client
+  labels:
+    name: client
+data:
+  log-level: "warn"
+  server-address: "http://server:8080"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: client
+  labels:
+    name: client
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: client
+  template:
+    metadata:
+      labels:
+        name: client
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: client
+          image: moorara/client:latest
+          imagePullPolicy: Always
+          env:
+            - name: LOG_LEVEL_FILE
+              value: /configs/log-level
+            - name: SERVER_ADDRESS_FILE
+              value: /configs/server-address
+          volumeMounts:
+            - name: client
+              mountPath: /configs
+              readOnly: true
+      volumes:
+        - name: client
+          configMap:
+            name: client
+            defaultMode: 420

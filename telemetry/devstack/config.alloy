@@ -1,0 +1,45 @@
+// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.source.api
+loki.source.api "default" {
+  http {
+    listen_address = "0.0.0.0"
+    listen_port    = 3100
+  }
+
+  labels = {
+    collector = "alloy",
+  }
+
+  forward_to = [loki.echo.default.receiver]
+}
+
+// https://grafana.com/docs/alloy/latest/reference/components/loki/loki.echo
+loki.echo "default" {}
+
+// https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.receiver.fluentforward
+otelcol.receiver.fluentforward "default" {
+  endpoint = "0.0.0.0:8006"
+
+  output {
+    logs = [otelcol.exporter.debug.default.input]
+  }
+}
+
+// https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.receiver.otlp
+otelcol.receiver.otlp "default" {
+  http {
+    endpoint = "0.0.0.0:4318"
+  }
+
+  grpc {
+    endpoint = "0.0.0.0:4317"
+  }
+
+  output {
+    logs    = [otelcol.exporter.debug.default.input]
+    metrics = [otelcol.exporter.debug.default.input]
+    traces  = [otelcol.exporter.debug.default.input]
+  }
+}
+
+// https://grafana.com/docs/alloy/latest/reference/components/otelcol/otelcol.exporter.debug
+otelcol.exporter.debug "default" {}

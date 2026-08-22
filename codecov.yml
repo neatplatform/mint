@@ -1,0 +1,39 @@
+## curl -X POST --data-binary @codecov.yml https://codecov.io/validate
+##
+## https://docs.codecov.com/docs/codecov-yaml
+## https://docs.codecov.com/docs/codecovyml-reference
+##
+
+codecov:
+  require_ci_to_pass: false  # Do not wait for other CI statuses to pass.
+
+# https://docs.codecov.com/docs/coverage-configuration
+coverage:
+  range: 60..90  # The visible color range from red to green.
+  round: down
+  precision: 2
+
+  # https://docs.codecov.com/docs/commit-status
+  status:
+    # Total coverage across the project, measured against the PR base or parent commit.
+    project:
+      default:
+        target: 90%    # A minimum coverage ratio that must be met.
+        threshold: 0%  # Allow coverage to drop by % and still post a success status.
+  
+    # Coverage of lines changed in the PR or commit.
+    patch:
+      default:
+        target: 95%    # A minimum coverage ratio that must be met.
+        threshold: 0%  # Allow coverage to drop by % and still post a success status.
+
+    # Coverage drops outside the PR/commit diff, reported as a commit status.
+    changes: true
+
+# https://docs.codecov.com/docs/pull-request-comments
+comment: false
+
+# https://docs.codecov.com/docs/ignoring-paths
+ignore:
+  - "**/example/**"
+  - "**/examples/**"

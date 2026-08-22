@@ -1,0 +1,62 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: server
+  labels:
+    name: server
+data:
+  log-level: "warn"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: server
+  labels:
+    name: server
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: server
+  template:
+    metadata:
+      labels:
+        name: server
+    spec:
+      restartPolicy: Always
+      containers:
+        - name: server
+          image: moorara/server:latest
+          imagePullPolicy: Always
+          ports:
+            - name: http
+              containerPort: 8080
+              protocol: TCP
+          env:
+            - name: LOG_LEVEL_FILE
+              value: /configs/log-level
+          volumeMounts:
+            - name: server
+              mountPath: /configs
+              readOnly: true
+      volumes:
+        - name: server
+          configMap:
+            name: server
+            defaultMode: 420
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: server
+  labels:
+    name: server
+spec:
+  type: ClusterIP
+  selector:
+    name: server
+  ports:
+    - name: http
+      protocol: TCP
+      port: 8080
+      targetPort: http
