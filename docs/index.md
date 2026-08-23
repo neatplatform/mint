@@ -24,14 +24,14 @@ best-in-class, battle-tested foundation for these concerns — consistently, by 
 
 ## Packages
 
-  - [`config`](../config) — config from flags, env vars, and files.
-  - [`grace`](../grace) — graceful startup and shutdown.
-  - [`health`](../health) — readiness and liveness checks.
-  - [`httpx`](../httpx) — HTTP server/client extensions.
-  - [`queue`](../queue) — in-memory queuing.
-  - [`telemetry`](../telemetry) — OpenTelemetry logs, metrics, and traces.
-  - [`factory`](../factory) — constructors for wiring the above together.
-  - [`file`](../file) — file utilities.
-  - [`ptr`](../ptr) — pointer helpers.
+  - [`config`](https://pkg.go.dev/github.com/neatplatform/mint/config) — config from flags, env vars, and files.
+  - [`grace`](https://pkg.go.dev/github.com/neatplatform/mint/grace) — graceful startup and shutdown.
+  - [`health`](https://pkg.go.dev/github.com/neatplatform/mint/health) — readiness and liveness checks.
+  - [`httpx`](https://pkg.go.dev/github.com/neatplatform/mint/httpx) — HTTP server/client extensions.
+  - [`queue`](https://pkg.go.dev/github.com/neatplatform/mint/queue) — in-memory queuing.
+  - [`telemetry`](https://pkg.go.dev/github.com/neatplatform/mint/telemetry) — OpenTelemetry logs, metrics, and traces.
+  - [`factory`](https://pkg.go.dev/github.com/neatplatform/mint/factory) — constructors for wiring the above together.
+  - [`file`](https://pkg.go.dev/github.com/neatplatform/mint/file) — file utilities.
+  - [`ptr`](https://pkg.go.dev/github.com/neatplatform/mint/ptr) — pointer helpers.
 
 Each package has its own *README* with usage details and examples.
