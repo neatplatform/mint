@@ -10,10 +10,10 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/metric/noop"
 
 	"github.com/neatplatform/mint/telemetry"
@@ -257,7 +257,8 @@ func TestClient_Do(t *testing.T) {
 				assert.Equal(t, tc.expectedCallerName, callerFromReq)
 
 				if tc.expectedRequestUUID == "" {
-					assert.NoError(t, uuid.Validate(uuidFromReq))
+					_, err := uuid.Parse(uuidFromReq)
+					assert.NoError(t, err)
 				} else {
 					assert.Equal(t, tc.expectedRequestUUID, uuidFromReq)
 				}

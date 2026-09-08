@@ -9,10 +9,10 @@ import (
 	"strings"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/metric/noop"
 
 	"github.com/neatplatform/mint/telemetry"
@@ -291,7 +291,10 @@ func TestMiddleware_Wrap(t *testing.T) {
 			if tc.expectObservation {
 				// Verify a valid request UUID is generated/preserved and propagated.
 				uuidFromResp := resp.Header.Get(requestUUIDHeader)
-				assert.NoError(t, uuid.Validate(uuidFromResp))
+
+				_, err := uuid.Parse(uuidFromResp)
+				assert.NoError(t, err)
+
 				assert.Equal(t, uuidFromResp, uuidFromCtx)
 				assert.Equal(t, uuidFromResp, uuidFromReq)
 
