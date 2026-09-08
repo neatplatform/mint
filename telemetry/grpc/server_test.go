@@ -6,10 +6,10 @@ import (
 	"io"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/metric/noop"
@@ -261,7 +261,10 @@ func TestServerInterceptor_Unary(t *testing.T) {
 			if tc.expectObservation {
 				// Verify a valid request UUID is generated/preserved and propagated.
 				uuidFromResp := mockServerTransportStream.SetHeaderMocks[0].InMD.Get(requestUUIDKey)[0]
-				assert.NoError(t, uuid.Validate(uuidFromResp))
+
+				_, err := uuid.Parse(uuidFromResp)
+				assert.NoError(t, err)
+
 				assert.Equal(t, uuidFromResp, uuidFromCtx)
 				assert.Equal(t, uuidFromResp, uuidFromMD)
 
@@ -563,7 +566,10 @@ func TestServerInterceptor_Stream(t *testing.T) {
 			if tc.expectObservation {
 				// Verify a valid request UUID is generated/preserved and propagated.
 				uuidFromResp := tc.ss.SetHeaderMocks[0].InMD.Get(requestUUIDKey)[0]
-				assert.NoError(t, uuid.Validate(uuidFromResp))
+
+				_, err := uuid.Parse(uuidFromResp)
+				assert.NoError(t, err)
+
 				assert.Equal(t, uuidFromResp, uuidFromCtx)
 				assert.Equal(t, uuidFromResp, uuidFromMD)
 

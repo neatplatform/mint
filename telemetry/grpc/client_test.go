@@ -6,10 +6,10 @@ import (
 	"io"
 	"testing"
 	"time"
+	"uuid"
 
 	"github.com/stretchr/testify/assert"
 
-	"github.com/google/uuid"
 	"go.opentelemetry.io/otel/attribute"
 	"go.opentelemetry.io/otel/metric"
 	"go.opentelemetry.io/otel/metric/noop"
@@ -325,7 +325,8 @@ func TestClientInterceptor_Unary(t *testing.T) {
 				assert.Equal(t, tc.expectedCallerName, callerFromMD)
 
 				if tc.expectedRequestUUID == "" {
-					assert.NoError(t, uuid.Validate(uuidFromMD))
+					_, err := uuid.Parse(uuidFromMD)
+					assert.NoError(t, err)
 				} else {
 					assert.Equal(t, tc.expectedRequestUUID, uuidFromMD)
 				}
@@ -582,7 +583,8 @@ func TestClientInterceptor_Stream(t *testing.T) {
 				assert.Equal(t, tc.expectedCallerName, callerFromMD)
 
 				if tc.expectedRequestUUID == "" {
-					assert.NoError(t, uuid.Validate(uuidFromMD))
+					_, err := uuid.Parse(uuidFromMD)
+					assert.NoError(t, err)
 				} else {
 					assert.Equal(t, tc.expectedRequestUUID, uuidFromMD)
 				}
