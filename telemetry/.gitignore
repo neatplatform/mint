@@ -1,4 +1,6 @@
 # Executable files
 main
-server
 client
+!client/
+server
+!server/
