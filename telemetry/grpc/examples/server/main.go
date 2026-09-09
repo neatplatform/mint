@@ -21,7 +21,7 @@ import (
 	"google.golang.org/grpc/metadata"
 	"google.golang.org/grpc/status"
 
-	healthpb "google.golang.org/grpc/health/grpc_health_v1"
+	healthv1 "google.golang.org/grpc/health/grpc_health_v1"
 
 	"github.com/neatplatform/mint/grace"
 	"github.com/neatplatform/mint/telemetry"
@@ -150,9 +150,9 @@ func newFileServer(name, addr string, si *telegrpc.ServerInterceptor, probe tele
 
 	// Register the standard grpc health service.
 	healthServer := health.NewServer()
-	healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
+	healthServer.SetServingStatus("", healthv1.HealthCheckResponse_SERVING)
 
-	healthpb.RegisterHealthServer(server, healthServer)
+	healthv1.RegisterHealthServer(server, healthServer)
 	filev1.RegisterFileServiceServer(server, newFileServiceServer())
 
 	return &FileServer{
