@@ -21,7 +21,7 @@ import (
   "google.golang.org/grpc/credentials/insecure"
   "google.golang.org/grpc/health"
 
-  healthpb "google.golang.org/grpc/health/grpc_health_v1"
+  healthv1 "google.golang.org/grpc/health/grpc_health_v1"
 
   "github.com/neatplatform/mint/telemetry"
   telegprc "github.com/neatplatform/mint/telemetry/grpc"
@@ -45,8 +45,8 @@ func main() {
   )
 
   healthServer := health.NewServer()
-  healthServer.SetServingStatus("", healthpb.HealthCheckResponse_SERVING)
-  healthpb.RegisterHealthServer(server, healthServer)
+  healthServer.SetServingStatus("", healthv1.HealthCheckResponse_SERVING)
+  healthv1.RegisterHealthServer(server, healthServer)
 
   lis, _ := net.Listen("tcp", "localhost:0")
 
@@ -64,10 +64,10 @@ func main() {
   )
   defer conn.Close()
 
-  client := healthpb.NewHealthClient(conn)
+  client := healthv1.NewHealthClient(conn)
 
   // Unary call, observed by the Unary interceptors on both sides.
-  if resp, err := client.Check(ctx, &healthpb.HealthCheckRequest{}); err == nil {
+  if resp, err := client.Check(ctx, &healthv1.HealthCheckRequest{}); err == nil {
     probe.Logger().Infof("[unary] health check status: %v", resp.Status)
   }
 
@@ -75,7 +75,7 @@ func main() {
   defer cancelWatch()
 
   // Server-streaming call, observed by the Stream interceptors on both sides.
-  stream, _ := client.Watch(watchCtx, &healthpb.HealthCheckRequest{})
+  stream, _ := client.Watch(watchCtx, &healthv1.HealthCheckRequest{})
 
   if resp, err := stream.Recv(); err == nil {
     probe.Logger().Infof("[stream] health check status: %v", resp.Status)
